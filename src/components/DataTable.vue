@@ -1,11 +1,32 @@
 <template>
     <div class="container mt-5">
-        <h2>Product DataTable</h2>
-        <div class="mb-3">
-            <!-- "New" button to open the CreateModal -->
-            <button @click="openCreateModal" class="btn btn-primary">New</button>
+        <div class="mt-3">
+            <button @click="toggleCreateForm" class="btn btn-primary">Toggle Create Form</button>
         </div>
-        <table class="table table-striped table-hover table-responsive-sm">
+
+        <div v-if="isCreateFormOpen" class="mt-3">
+            <div v-if="isCreateFormOpen" class="mt-3">
+                <h3>Create New Product</h3>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" v-model="newProduct.name" />
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" v-model="newProduct.price" />
+                </div>
+                <div class="form-group">
+                    <label for="detail">Detail</label>
+                    <textarea class="form-control" id="detail" v-model="newProduct.detail"></textarea>
+                </div>
+                <button @click="createProduct" class="btn btn-success mt-2">Create Product</button>
+            </div>
+        </div>
+
+
+        <h2>Product DataTable</h2>
+
+        <table class="table table-striped table-hover table-responsive-sm" id="productTable">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -23,17 +44,13 @@
                     <td>{{ product.detail }}</td>
                     <td>
                         <div class="d-flex">
-                            <button @click="openEditModal(product)" class="btn btn-outline-primary">Edit</button>
-                            <button class="btn btn-danger">Delete</button>
+                            <button @click="openEditModal(product)" class="btn btn-outline-primary me-2">Edit</button>
+                            <button @click="confirmDeleteProduct(product)" class="btn btn-danger">Delete</button>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-
-
-        <!-- Edit Modal -->
         <edit-modal :product="editedProduct" :show="isModalOpen" @save="saveProduct" @close="isModalOpen = false"
             ref="editModal" />
     </div>
@@ -42,7 +59,6 @@
 <script>
 import axios from "axios";
 import EditModal from "@/components/EditModal.vue";
-import CreateModal from "@/components/CreateModal.vue";
 
 export default {
     data() {
@@ -50,12 +66,27 @@ export default {
             products: [],
             editedProduct: {},
             isCreateModalOpen: false,
+            isModalOpen: false,
+            isCreateFormOpen: false,
+            newProduct: {
+                name: "",
+                price: 0,
+                detail: "",
+            },
         };
     },
     created() {
         this.fetchProducts();
     },
     methods: {
+        initializeDataTable() {
+            // Initialize DataTable on the table with the ID 'productTable'
+            $(this.$refs.productTable).DataTable();
+            let table = new DataTable('#productTable', {
+                responsive: true
+            });
+
+        },
         async fetchProducts() {
             try {
                 const accessToken = localStorage.getItem("access_token");
@@ -88,22 +119,59 @@ export default {
             // Close the modal
             this.isModalOpen = false;
         },
-        openCreateModal() {
-            this.isCreateModalOpen = true;
+        confirmDeleteProduct(product) {
+            const confirmMessage = `Are you sure you want to delete "${product.name}"?`;
+            if (confirm(confirmMessage)) {
+                this.deleteProduct(product.id);
+            }
+        },
+        async deleteProduct(productId) {
+            try {
+                const accessToken = localStorage.getItem("access_token");
+                await axios.delete(`http://localhost:8080/api/v1/products/${productId}`, {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+
+                // If the request is successful, remove the deleted product from the products array.
+                this.products = this.products.filter((product) => product.id !== productId);
+            } catch (error) {
+                console.error("Error deleting product:", error);
+            }
+        },
+        toggleCreateForm() {
+            this.isCreateFormOpen = !this.isCreateFormOpen;
+        },
+        async createProduct() {
+            try {
+                // Prepare the data for the new product (assuming you have form inputs to gather this data)
+                const newProductData = {
+                    name: this.newProduct.name,
+                    price: this.newProduct.price,
+                    detail: this.newProduct.detail,
+                };
+                const accessToken = localStorage.getItem("access_token");
+                const response = await axios.post("http://localhost:8080/api/v1/products", newProductData, {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                console.log(response);
+                if (response.status === 201) {
+                    this.fetchProducts();
+                    this.isCreateFormOpen = false;
+                    this.newProduct.name = "";
+                    this.newProduct.price = 0;
+                    this.newProduct.detail = "";
+                } else {
+                    console.error(response);
+                }
+            } catch (error) {
+                console.error("Error creating product:", error);
+            }
         },
 
-        handleProductCreated(newProduct) {
-            // Handle the newly created product data received from the CreateModal component
-            // For this example, we'll add the new product to the local products array directly
-            this.products.push(newProduct);
-
-            // Close the modal
-            this.isCreateModalOpen = false;
-        },
     },
     components: {
         EditModal,
-        CreateModal,
+
     },
 };
 </script>
