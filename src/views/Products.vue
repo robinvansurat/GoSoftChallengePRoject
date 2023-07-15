@@ -1,145 +1,24 @@
 <template>
     <div class="container">
-        <div class="row">
-
-            <div class="col-4" v-for="card in cards" :key="card.id">
-                <div class="card" style="width: 18rem;">
-                    <img :src="card.image" class="card-img-top" :alt="card.title" />
-                    <div class="card-body">
-                        <h5 class="card-title">{{ card.title }}</h5>
-                        <p class="card-text">{{ card.description }}</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        <h1>Product DataTable</h1>
+        <DataTable />
     </div>
 </template>
-
+  
 <script>
-import image1 from '@/assets/image 3.png';
-import image2 from '@/assets/image 5.png';
+import DataTable from "../components/DataTable.vue";
 
 export default {
-    name: 'CardList',
-    data() {
-        return {
-            cards: [
-                {
-                    id: 1,
-                    image: image1,
-                    title: 'Card 1',
-                    description: 'Some quick example text for Card 1',
-                },
-                {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                },
-                {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                }, {
-                    id: 2,
-                    image: image2,
-                    title: 'Card 2',
-                    description: 'Some quick example text for Card 2',
-                },
-            ],
-        };
+    components: {
+        DataTable,
     },
 };
 </script>
-
-
-
-<style scoped></style>
+  
+<style>
+.container {
+    margin: 2rem auto;
+    max-width: 800px;
+}
+</style>
+  
